@@ -49,5 +49,8 @@ Given: the app is loaded
 When: user clicks on a city
 Then: a chart with the
 
+# Serverless Functions
+This app will use a token for authorization, which will be generated in an authorization server. This server will host Lambda functions created to deliver authorization tokens to users. With this token, users will have access to event data from Google Calendar API.
+
 ## Links:
 [Live site URL](https://bryanevan.github.io/meet_app)
