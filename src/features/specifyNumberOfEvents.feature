@@ -1,11 +1,11 @@
-Feature: Specify Number Of Events
+Feature: Specify number of events
 
-Scenario: When user has not specified a number let 32 be the default number
-Given that a user has not specified a number of events
-When selecting cities
-Then A default number of 32 is loaded on the page
+Scenario: When user hasn’t specified a number, 32 is the default number
+Given the app is loaded.
+When the user hasn’t specified the number of events.
+Then a list of 32 events is served to the user.
 
 Scenario: User can change the number of events they want to see
-Given that the user does not want to view all events
-When user changes the number of events in the input box
-Then the User should be able to change the number of events they want to see.
+Given a list of events has been served to the user. 
+When the user specifies the number of events to be loaded.
+Then a list with the specified number of events is served to the user.

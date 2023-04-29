@@ -1,46 +1,57 @@
-import React from "react";
-import { loadFeature, defineFeature } from "jest-cucumber";
 import { mount } from "enzyme";
+import { loadFeature, defineFeature } from "jest-cucumber";
 import App from "../App";
-import { mockData } from "../mock-data";
+import NumberOfEvents from "../NumberOfEvents";
 
-const feature = loadFeature('./src/features/specifyNumberOfEvents.feature');
+const feature = loadFeature("./src/features/specifyNumberOfEvents.feature");
 
-defineFeature(feature, test => {
+defineFeature(feature, (test) => {
+  test("When user hasn’t specified a number, 32 is the default number", ({
+    given,
+    when,
+    then,
+  }) => {
     let AppWrapper;
-    test('When user has not specified a number let 32 be the default number', ({ given, when, then }) => {
-        given('that a user has not specified a number of events', () => {
-
-        });
-
-        when('selecting cities', () => {
-           AppWrapper = mount(<App />);
-        });
-
-        then('A default number of 32 is loaded on the page', () => {
-           expect(AppWrapper.state('eventCount')).toEqual(32);
-        });
+    given("the app is loaded.", () => {
+      AppWrapper = mount(<App />);
     });
 
-    test('User can change the number of events they want to see', ({ given, when, then }) => {
-        given('that the user does not want to view all events', async () => {
-           AppWrapper = await mount(<App />);
-        });
-
-        when('user changes the number of events in the input box', () => {
-           AppWrapper.update();
-           let NumberOfEventsWrapper = AppWrapper.find('NumberOfEvents');
-           const eventObject = { target: { value: 2 }};
-           NumberOfEventsWrapper.find('.noe-input').simulate(
-            'change',
-            eventObject
-           );
-        });
-
-
-        then('the User should be able to change the number of events they want to see.', () => {
-           expect(AppWrapper.find('.event')).toHaveLength(mockData.length);
-        });
+    when("the user hasn’t specified the number of events.", () => {
+      expect(AppWrapper.state("eventCount")).toBe(32);
     });
 
+    then(/^a list of (\d+) events is served to the user.$/, (arg0) => {
+      AppWrapper.update();
+      expect(AppWrapper.find(".event")).toHaveLength(32);
+    });
+  });
+
+  test("User can change the number of events they want to see", ({
+    given,
+    when,
+    then,
+  }) => {
+    let AppWrapper;
+    given("a list of events has been served to the user.", async () => {
+      AppWrapper = await mount(<App />);
+      AppWrapper.update();
+      expect(AppWrapper.find(".event")).toHaveLength(32);
+    });
+
+    const selectedNumber = Math.floor(Math.random() * 32);
+    when("the user specifies the number of events to be loaded.", async () => {
+      const NumberOfEventsWrapper = AppWrapper.find(NumberOfEvents);
+      const event = { target: { value: selectedNumber } };
+      await NumberOfEventsWrapper.instance().handleInputChanged(event);
+    });
+
+    then(
+      "a list with the specified number of events is served to the user.",
+      () => {
+        AppWrapper.update();
+        expect(AppWrapper.state("eventCount")).toEqual(selectedNumber);
+        expect(AppWrapper.find(".event")).toHaveLength(selectedNumber);
+      }
+    );
+  });
 });
