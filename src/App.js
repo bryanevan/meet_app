@@ -3,9 +3,10 @@ import "./App.css";
 import CitySearch from "./CitySearch";
 import EventList from "./EventList";
 import NumberOfEvents from "./NumberOfEvents";
-import { getEvents, extractLocations } from "./api";
+import { getEvents, extractLocations, checkToken, getAccessToken } from "./api";
 import "./nprogress.css";
 import { WarningAlert } from "./Alert";
+import WelcomeScreen from "./WelcomeScreen";
 
 class App extends Component {
   state = {
@@ -14,10 +15,18 @@ class App extends Component {
     eventCount: 32,
     selectedCity: null,
     warningText: "",
+    showWelcomeScreen: undefined,
   };
 
-  componentDidMount() {
+  async componentDidMount() {
     this.mounted = true;
+    const accessToken = localStorage.getItem("access_token");
+    const isTokenValid = (await checkToken(accessToken)).error ? false : true;
+    const searchParams = new URLSearchParams(window.location.search);
+    const code = searchParams.get("code");
+    const authorized = code || isTokenValid;
+    const isLocal = window.location.href.indexOf("localhost") > -1;
+    this.setState({ showWelcomeScreen : !authorized && !isLocal });
     getEvents().then((events) => {
       if (this.mounted) {
         const shownEvents = events.slice(0, this.state.eventCount);
@@ -92,9 +101,9 @@ class App extends Component {
   };
 
   render() {
+    if (this.state.showWelcomeScreen === undefined) return <div className="App" />
     return (
       <div className='App'>
-        <WarningAlert text={this.state.offLineText} />
         <CitySearch
           locations={this.state.locations}
           updateEvents={this.updateEvents}
@@ -104,7 +113,10 @@ class App extends Component {
           query={this.state.eventCount}
           updateEvents={this.updateEvents}
         />
+        <WarningAlert text={this.state.offLineText} />
         <EventList events={this.state.events} />
+        <WelcomeScreen showWelcomeScreen={this.state.showWelcomeScreen} getAccessToken={() => { 
+          getAccessToken() }} />
       </div>
     );
   }
