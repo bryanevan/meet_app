@@ -22,7 +22,7 @@ handleInputChanged = (event) => {
     if (value <1 || value > 32) {
       this.setState({
         query:value,
-        errorText: "Please valid number: max is 32.",
+        errorText: "Please use a valid number: max is 32.",
       });
     }
 };
