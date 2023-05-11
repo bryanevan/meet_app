@@ -3,8 +3,27 @@ A serverless, progressive web application (PWA) with React using a
 test-driven development (TDD) technique. The application uses the Google
 Calendar API to fetch upcoming events.
 
+# Tech Stack
+* React
+* Recharts
+* AWS Lambda
+* Serverless Function
+* Jest / Jest-Cucmber
+* Puppeteer
+* Atatus
+* Enzyme
 
-# Key Features & User Stories:
+# Features
+-Serverless functions deployed using AWS Lambda. 
+-Performs Oauth and accesses Google Calender API via serverless functions 
+-React Recharts visualization library 
+-Jest test scripting for unit and integration testing 
+-Enzyme for shallow rendering unit tests 
+-Enzyme for full rendering integration tests 
+-Puppeteer for user acceptance and end-to-end testing 
+-Progressive Web Application
+
+# User Stories:
 Feature2: Show/Hide event’s details
 User story: As a user, I should be able to show or hide details, so I can see more or less information about an event.
 Scenario1: an event element is collapsed by default
